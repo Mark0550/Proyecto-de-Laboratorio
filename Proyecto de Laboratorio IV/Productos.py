@@ -2,7 +2,6 @@ from Conexion import *
 
 class CProductos:
 
-    @staticmethod
     def mostrarProductos():
         try:
             cone = CConexion.ConexionBaseDeDatos()
@@ -14,7 +13,6 @@ class CProductos:
         except mysql.connector.Error as error:
             print("Error al mostrar productos: {}".format(error))
 
-    @staticmethod
     def ingresarProducto(id_usuario, nombre_producto, cantidad, precio):
         try:
             cone = CConexion.ConexionBaseDeDatos()
@@ -28,7 +26,6 @@ class CProductos:
         except mysql.connector.Error as error:
             print("Error al ingresar producto: {}".format(error))
 
-    @staticmethod
     def modificarProducto(id, id_usuario, nombre_producto, cantidad, precio):
         try:
             cone = CConexion.ConexionBaseDeDatos()
@@ -42,7 +39,6 @@ class CProductos:
         except mysql.connector.Error as error:
             print("Error al modificar producto: {}".format(error))
 
-    @staticmethod
     def eliminarProducto(id):
         try:
             cone = CConexion.ConexionBaseDeDatos()
