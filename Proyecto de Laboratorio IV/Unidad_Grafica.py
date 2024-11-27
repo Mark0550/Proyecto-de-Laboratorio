@@ -1,14 +1,10 @@
 import tkinter as tk
-
-#Importar los modulos restantes de tkinter
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 
 from Clientes import *
-
 from Conexion import *
-
 from Productos import *
 
 class formularioClientes:
@@ -70,8 +66,7 @@ def formulario():
 
             groupBox=LabelFrame(base,text="Lista del Personal",padx=5,pady=5)
             groupBox.grid(row=0,column=1,padx=5,pady=5)
-            #Crear un treeview
-            #Configurar las columnas
+            
             tree =ttk.Treeview(groupBox,columns=("Id","Nombre","Apellido","Sexo"),show='headings',height=5)
             tree.grid(row=5, column=0, columnspan=3)
             tree.column("# 1",anchor=CENTER)
@@ -82,11 +77,10 @@ def formulario():
             tree.heading("#3",text="Apellido")
             tree.column("# 4",anchor=CENTER)
             tree.heading("#4",text="Sexo")
-            # Agregar los datos a la tabla
-            # Mostrar la tabla
+            
             for row in CClientes.mostrarClientes():
                 tree.insert("","end",values=row)
-            # Ejecutar la funcion de hacer click y mostrar el resultado en los Entry
+                
             tree.bind("<<TreeviewSelect>>",selecionarRegistro)
             actualizartreeView()
             formularioProductos()
@@ -98,7 +92,6 @@ def formulario():
 def guardaRegistros():
         global textBoxNombres,textBoxApellidos,combo,groupBox
         try:
-            # Verificar si los widgets estan inicializados
             if textBoxNombres is None or textBoxApellidos is None or combo is None:
                 print("Los widgets no estan inicializados")
                 return
@@ -108,7 +101,7 @@ def guardaRegistros():
             CClientes.ingresarClientes(nombres,apellidos,sexo)
             messagebox.showinfo("Informacion","Los datos fueron guardados")
             actualizartreeView()
-            # Limpiamos los campos
+            
             textBoxNombres.delete(0,END)
             textBoxApellidos.delete(0,END)
         except ValueError as error:
@@ -117,11 +110,8 @@ def guardaRegistros():
 def actualizartreeView():
     global tree
     try:
-        # Borrar todos los elementos actuales del treeView
         tree.delete(*tree.get_children())
-        # Obtener los nuevos datos en el treeview
         datos=CClientes.mostrarClientes()
-        # Insertar los nuevos datos en el treeview
         for row in CClientes.mostrarClientes():
             tree.insert("","end",values=row)
     except ValueError as error:
@@ -131,9 +121,8 @@ def selecionarRegistro(event):
     try:
         itemSelecion= tree.focus()
         if itemSelecion:
-            # Obtener los valores por columna
             values=tree.item(itemSelecion)['values']
-            # Establecer los valores en los widgets Entry
+            
             textBoxId.delete(0,END)
             textBoxId.insert(0,values[0])
             textBoxNombres.delete(0,END)
@@ -147,7 +136,6 @@ def selecionarRegistro(event):
 def modificarRegistros():
         global textBoxId,textBoxNombres,textBoxApellidos,combo
         try:
-            # Verificar si los widgets estan inicializados
             if textBoxId is None or textBoxNombres is None or textBoxApellidos is None or combo is None:
                 print("Los widgets no estan inicializados")
                 return            
@@ -158,7 +146,7 @@ def modificarRegistros():
             CClientes.modificarClientes(idUsuario,nombres,apellidos,sexo)
             messagebox.showinfo("Informacion","Los datos fueron actualizados")
             actualizartreeView()
-            # Limpiamos los campos
+            
             textBoxId.delete(0,END)
             textBoxNombres.delete(0,END)
             textBoxApellidos.delete(0,END)
@@ -168,7 +156,6 @@ def modificarRegistros():
 def eliminarRegistros():
         global textBoxId,textBoxNombres,textBoxApellidos
         try:
-            # Verificar si los widgets estan inicializados
             if textBoxId is None:
                 print("Los widgets no estan inicializados")
                 return
@@ -178,7 +165,7 @@ def eliminarRegistros():
             messagebox.showinfo("Informacion","Los datos fueron eliminados")
             
             actualizartreeView()
-            # Limpiamos los campos
+
             textBoxId.delete(0,END)
             textBoxNombres.delete(0,END)
             textBoxApellidos.delete(0,END)
@@ -208,7 +195,7 @@ def formularioProductos():
     Button(groupBoxProductos, text="Guardar", width=10, command=lambda: guardaProducto(textBoxIdUsuario, textBoxNombreProducto, textBoxCantidad, textBoxPrecio)).grid(row=4, column=0, padx=5, pady=5)
     Button(groupBoxProductos, text="Modificar", width=10, command=modificarProducto).grid(row=4, column=1, padx=5, pady=5)
     Button(groupBoxProductos, text="Eliminar", width=10, command=eliminarProducto).grid(row=4, column=2, padx=5, pady=5)
-    # Configuración de la tabla para productos
+
     treeProductos = ttk.Treeview(groupBoxProductos, columns=("Id", "ID Usuario", "Nombre", "Cantidad", "Precio"), show='headings', height=5)
     treeProductos.grid(row=5, column=0, columnspan=15, padx=5, pady=5)
     treeProductos.column("#1", anchor=CENTER)
@@ -221,7 +208,7 @@ def formularioProductos():
     treeProductos.heading("#4", text="Cantidad")
     treeProductos.column("#5", anchor=CENTER)
     treeProductos.heading("#5", text="Precio")
-    # Vincular el evento de selección al Treeview
+
     treeProductos.bind("<<TreeviewSelect>>", selecionarRegistroProducto)
     actualizarTreeProductos()
 
@@ -246,25 +233,21 @@ def actualizarTreeProductos():
 def modificarProducto():
     global treeProductos,textBoxIdUsuario,textBoxNombreProducto,textBoxCantidad,textBoxPrecio
     try:
-        # Obtener los valores seleccionados
         itemSelecion = treeProductos.focus()
         if not itemSelecion:
             messagebox.showwarning("Advertencia", "Por favor selecciona un producto para modificar.")
             return
-        # Obtener los datos del producto seleccionado
         valores = treeProductos.item(itemSelecion, 'values')
         id_producto = valores[0]
-        # Recuperar los datos del formulario
         id_usuario = textBoxIdUsuario.get()
         nombre_producto = textBoxNombreProducto.get()
         cantidad = int(textBoxCantidad.get())
         precio = float(textBoxPrecio.get())
-        # Llamar al método de actualización en la clase `CProductos`
+        
         CProductos.modificarProducto(id_producto, id_usuario, nombre_producto, cantidad, precio)
-        # Mostrar mensaje de éxito y actualizar el `Treeview`
         messagebox.showinfo("Información", "Producto actualizado exitosamente.")
+        
         actualizarTreeProductos()
-        # Limpiar los campos
         limpiarCamposProductos()
     except Exception as e:
         messagebox.showerror("Error", f"Error al modificar el producto: {e}")
@@ -272,20 +255,15 @@ def modificarProducto():
 def eliminarProducto():
     global treeProductos
     try:
-        # Obtener los valores seleccionados
         itemSelecion = treeProductos.focus()
         if not itemSelecion:
             messagebox.showwarning("Advertencia", "Por favor selecciona un producto para eliminar.")
             return
-        # Obtener el ID del producto seleccionado
         valores = treeProductos.item(itemSelecion, 'values')
         id_producto = valores[0]
-        # Confirmación antes de eliminar
         respuesta = messagebox.askyesno("Confirmación", "¿Estás seguro de que deseas eliminar este producto?")
         if respuesta:
-            # Llamar al método de eliminación en la clase `CProductos`
             CProductos.eliminarProducto(id_producto)
-            # Mostrar mensaje de éxito y actualizar el `Treeview`
             messagebox.showinfo("Información", "Producto eliminado exitosamente.")
             actualizarTreeProductos()
     except Exception as e:
@@ -293,26 +271,22 @@ def eliminarProducto():
 
 def selecionarRegistroProducto(event):
     try:
-        # Obtener el elemento seleccionado en el Treeview
         itemSelecion = treeProductos.focus()
         if itemSelecion:
-            # Obtener los valores del registro seleccionado
             values = treeProductos.item(itemSelecion)['values']
-            # Establecer los valores en los campos de entrada
             textBoxIdUsuario.delete(0, END)
-            textBoxIdUsuario.insert(0, values[1])  # ID Usuario
+            textBoxIdUsuario.insert(0, values[1])
             textBoxNombreProducto.delete(0, END)
-            textBoxNombreProducto.insert(0, values[2])  # Nombre del Producto
+            textBoxNombreProducto.insert(0, values[2])
             textBoxCantidad.delete(0, END)
-            textBoxCantidad.insert(0, values[3])  # Cantidad
+            textBoxCantidad.insert(0, values[3])
             textBoxPrecio.delete(0, END)
-            textBoxPrecio.insert(0, values[4])  # Precio
+            textBoxPrecio.insert(0, values[4])
     except ValueError as error:
         print("Error al seleccionar registro de producto: {}".format(error))
 
 def limpiarCamposProductos():
     try:
-        # Limpiar los valores de los campos de entrada
         textBoxIdUsuario.delete(0, END)
         textBoxNombreProducto.delete(0, END)
         textBoxCantidad.delete(0, END)
